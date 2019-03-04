@@ -67,10 +67,11 @@ function showTable()
     var outputString = "";
     
     //Loop through rows and columns and build table
-    for (var i = 0; i < rows; i++)
+    //Loop through in reverse so that the table generated matches the intuitive array indices
+    for (var i = rows-1; i >= 0; i--)
     {
         outputString += "<tr>"; //Start row
-        for (var j = 0; j < columns; j++){
+        for (var j = columns - 1; j >= 0; j--){
             //set "0" tile to blank
             if(arrayForBoard[i][j] == 0){
                 outputString += "<td class=\"blank\"> </td>";
@@ -188,6 +189,7 @@ function ensureSolvability(arrayToFillFrom)
 {
     var inversions = 0;
     var blank;
+    var blankRow;
     var solvable = false;
 
     console.log(arrayToFillFrom.length);
@@ -200,24 +202,31 @@ function ensureSolvability(arrayToFillFrom)
             blank = i;
             console.log("blank at " + i);
         }
-        // else
-        // {
-        //     for(var j = i+1; i < arrayToFillFrom.length; j++)
-        //     {
-        //         if (arrayToFillFrom[i] > arrayToFillFrom[j]) { inversions++; }
-        //         console.log("current inversions" + inversions);
-        //     }
-        // }
+        else
+        {
+            for(var j = i+1; j < arrayToFillFrom.length; j++)
+            {
+                if (arrayToFillFrom[j] == 0)
+                {
+                    continue;
+                }
+                if (arrayToFillFrom[i] > arrayToFillFrom[j]) { inversions++; }
+                var cur = arrayToFillFrom[j];
+                console.log({i, j, cur, inversions});
+            }
+        }
     }
 
-    if(     (!isEven(columns) && (inversions % 2 == 0))
+    blankRow = findRow(blank);
+
+    if(     (!isEven(columns) && (isEven(inversions)))
         ||  ((isEven(columns)) && (isEven(findRow(blank))) && !(isEven(inversions))) 
         ||  ((isEven(columns)) && (!isEven(findRow(blank))) && (isEven(inversions))) )
     {
         solvable = true;
     }
 
-    console.log({inversions, blank, solvable});
+    console.log({inversions, blank, blankRow, solvable});
 }
 
 function findRow(index){
