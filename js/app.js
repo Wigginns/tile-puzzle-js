@@ -6,7 +6,7 @@ var columns;
 var textMoves;
 var textArraycount;
 var arrayForBoard;
-const DEBUG = true;
+const DEBUG = false;
 const EASY = false;
 
 
