@@ -4,6 +4,7 @@ var rows;
 var columns;
 var textMoves;
 var arrayForBoard;
+var DEBUG = false;
 
 
 function start()
@@ -45,17 +46,26 @@ function startNewGame()
         arrayToFillFrom[i] = i;
     }
 
-    console.log(arrayToFillFrom);
-    arrayToFillFrom.sort(function(a, b){return 0.5 - Math.random()});
-    console.log(arrayToFillFrom);
-
-    ensureSolvability(arrayToFillFrom);
+    if (!DEBUG) arrayToFillFrom.sort(function(a, b){return 0.5 - Math.random()});
+    
+    while(!ensureSolvability(arrayToFillFrom))
+    {
+        arrayToFillFrom.sort(function(a, b){return 0.5 - Math.random()});
+    }
 
     //pop randomized values from 1 to boardsize-1 into game board array
+    // var test = rows*columns-1;
+    var first = true;
     for (var i = 0; i < rows; i++)
     {
-        for (var j = 0; j < columns; j++){
-            arrayForBoard[i][j] = arrayToFillFrom.pop();
+        for (var j = 0; j < columns; j++){     
+            if(first && DEBUG){
+                arrayForBoard[i][j] = 0;
+                first = false;
+            }
+            else{
+                arrayForBoard[i][j] = arrayToFillFrom.pop();
+            }
         }
     }
 
@@ -149,8 +159,8 @@ function checkIfMoveable(rowCoordinate, columnCoordinate, direction)
 function checkIfWinner()
 {
     var count = 1;
-    for (var i = 0; i < rows; i++){
-        for (var j = 0; j < rows; j++){
+    for (var i = rows-1; i >= 0; i--){
+        for (var j = columns-1; j >= 0; j--){
             if (arrayForBoard[i][j] != count)
             {
                 if( !(count === rows * columns && arrayForBoard[i][j] === 0))
@@ -221,12 +231,14 @@ function ensureSolvability(arrayToFillFrom)
 
     if(     (!isEven(columns) && (isEven(inversions)))
         ||  ((isEven(columns)) && (isEven(findRow(blank))) && !(isEven(inversions))) 
-        ||  ((isEven(columns)) && (!isEven(findRow(blank))) && (isEven(inversions))) )
+        ||  ((isEven(columns)) && (!isEven(findRow(blank))) && (isEven(inversions))) 
+        ||  inversions == 0)
     {
         solvable = true;
     }
 
     console.log({inversions, blank, blankRow, solvable});
+    return solvable;
 }
 
 function findRow(index){
