@@ -95,7 +95,7 @@ function showTable()
             }
             else
             {
-                outputString += "<td class=\"tile\" onClick=\"moveTile(" + i + ", " + j + ")\">" + arrayForBoard[i][j] + "</td>";
+                outputString += "<td class=\"tile\" onClick=\"moveTile(" + i + ", " + j + ", this" + ")\">" + arrayForBoard[i][j] + "</td>";
             }
         }
         outputString += "</tr>"; //End Row
@@ -105,7 +105,7 @@ function showTable()
 
 }
 
-function moveTile( tableRow, tableColumn)
+function moveTile( tableRow, tableColumn, id)
 {
     if (checkIfMoveable(tableRow, tableColumn, "up") ||
         checkIfMoveable(tableRow, tableColumn, "down") ||
@@ -116,12 +116,19 @@ function moveTile( tableRow, tableColumn)
     }
     else
     {
-        alert("ERROR: Cannot move tile!\nTile must be next to a blank space.");
+        id.classList.toggle('tile');
+        id.classList.toggle('tileInvalid');
+        
+        setTimeout(function(){
+            id.classList.toggle('tile');
+            id.classList.toggle('tileInvalid');
+        }, 500);
+
     }
 
     if (checkIfWinner())
     {
-        alert("Congrats. You solved the puzzle in " + moves + "moves.");
+        alert("Congrats. You solved the puzzle in " + moves + " moves.");
         // startNewGame();
     }
 }
