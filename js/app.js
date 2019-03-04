@@ -1,10 +1,13 @@
 var moves = 0;
+var arraycount = 0;
 var gametable;
 var rows;
 var columns;
 var textMoves;
+var textArraycount;
 var arrayForBoard;
-var DEBUG = false;
+const DEBUG = true;
+const EASY = false;
 
 
 function start()
@@ -13,6 +16,7 @@ function start()
     button.addEventListener("click", startNewGame, false);
     textMoves = document.getElementById("moves");
     gametable = document.getElementById("gametable");
+    textArraycount = document.getElementById("arraycount");
     rows = 4;
     columns = 4;
     startNewGame();
@@ -25,8 +29,7 @@ function startNewGame()
     var randomNumber = 0;
     var count = 0;
     moves = 0;
-
-    console.log("game start");
+    arraycount = 1;
 
     rows = document.getElementById("rows").value;
     columns = document.getElementById("columns").value;
@@ -46,10 +49,14 @@ function startNewGame()
         arrayToFillFrom[i] = i;
     }
 
-    if (!DEBUG) arrayToFillFrom.sort(function(a, b){return 0.5 - Math.random()});
+    if (!EASY) arrayToFillFrom.sort(function(a, b){return 0.5 - Math.random()});
     
-    while(!ensureSolvability(arrayToFillFrom))
+    while(!solvable(arrayToFillFrom))
     {
+        arraycount++;
+        if (textArraycount){
+            textArraycount.innerHTML = arraycount;
+        }
         arrayToFillFrom.sort(function(a, b){return 0.5 - Math.random()});
     }
 
@@ -59,7 +66,7 @@ function startNewGame()
     for (var i = 0; i < rows; i++)
     {
         for (var j = 0; j < columns; j++){     
-            if(first && DEBUG){
+            if(first && EASY){
                 arrayForBoard[i][j] = 0;
                 first = false;
             }
@@ -195,22 +202,20 @@ function incrementMoves()
   * ( (grid width odd) && (#inversions even) )  ||  ( (grid width even) && ((blank on odd row from bottom) == (#inversions even)) )
   * 
  ******************************************/
-function ensureSolvability(arrayToFillFrom)
+function solvable(arrayToFillFrom)
 {
     var inversions = 0;
     var blank;
     var blankRow;
     var solvable = false;
 
-    console.log(arrayToFillFrom.length);
-
     for(var i = 0; i < arrayToFillFrom.length; i++)
     {
-        console.log("array[" + i +"] == " + arrayToFillFrom[i]);
+        if (DEBUG) console.log("array[" + i +"] == " + arrayToFillFrom[i]);
         if(arrayToFillFrom[i] == 0)
         {
             blank = i;
-            console.log("blank at " + i);
+            if (DEBUG) console.log("blank at " + i);
         }
         else
         {
@@ -221,8 +226,7 @@ function ensureSolvability(arrayToFillFrom)
                     continue;
                 }
                 if (arrayToFillFrom[i] > arrayToFillFrom[j]) { inversions++; }
-                var cur = arrayToFillFrom[j];
-                console.log({i, j, cur, inversions});
+                if (DEBUG) console.log({i, j, inversions});
             }
         }
     }
