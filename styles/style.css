@@ -11,7 +11,7 @@
     text-align: center;
     /* https://www.color-hex.com/color-palette/10221 */
     background: linear-gradient(to bottom right, #ff71ce,#01cdfe);
-    color: rgb(150, 71, 71);
+    color: #000;
     cursor: pointer;
 }
 .blank {
