@@ -25,8 +25,6 @@ function startNewGame()
     var count = 0;
     moves = 0;
 
-    console.log("gamestart");
-
     rows = document.getElementById("rows").value;
     columns = document.getElementById("columns").value;
 
@@ -82,26 +80,89 @@ function showTable()
 
 }
 
-// function moveTile( tableRow, tableColumn)
-// {
-//     if (checkIfMoveable(tableRow, tableColumn, "up") ||
-//         checkIfMoveable(tableRow, tableColumn, "down") ||
-//         checkIfMoveable(tableRow, tableColumn, "left") ||
-//         checkIfMoveable(tableRow, tableColumn, "right") )
-//     {
-//      incrementMoves();
-//     }
-//     else
-//     {
-//         alert("ERROR: Cannot move tile!\nTile must be next to a blank space.");
-//     }
+function moveTile( tableRow, tableColumn)
+{
+    if (checkIfMoveable(tableRow, tableColumn, "up") ||
+        checkIfMoveable(tableRow, tableColumn, "down") ||
+        checkIfMoveable(tableRow, tableColumn, "left") ||
+        checkIfMoveable(tableRow, tableColumn, "right") )
+    {
+     incrementMoves();
+    }
+    else
+    {
+        alert("ERROR: Cannot move tile!\nTile must be next to a blank space.");
+    }
 
-//     if (checkIfWinner()){
-//         alert("Congrats. You solved the puzzle in " + moves + "moves.");
-//         // startNewGame();
-//     }
-// }
+    if (checkIfWinner())
+    {
+        alert("Congrats. You solved the puzzle in " + moves + "moves.");
+        // startNewGame();
+    }
+}
 
+function checkIfMoveable(rowCoordinate, columnCoordinate, direction)
+{
+    rowOffset = 0;
+    columnOffset = 0;
+    switch(direction) {
+        case "up":
+            columnOffset = -1;
+            break;
+        case "right":
+            rowOffset = 1;
+            break;
+        case "left":
+            rowOffset = -1;
+            break;
+        case "down":
+            columnOffset = 1;
+            break;            
+    }
 
+    //Check if the tile can be moved to the spot requested
+    //If it can, move it and return true to indicate it's been moved
+    if (rowCoordinate + rowOffset >= 0 && columnCoordinate + columnOffset >= 0 &&
+        rowCoordinate + rowOffset < rows && columnCoordinate + columnOffset < columns)
+    {
+        //Check to make sure we're moving into the "blank" tile only
+        //If so swap the values
+        if( arrayForBoard[rowCoordinate + rowOffset][columnCoordinate + columnOffset] == 0)
+        {
+            arrayForBoard[rowCoordinate + rowOffset][columnCoordinate + columnOffset] = arrayForBoard[rowCoordinate][columnCoordinate];
+            arrayForBoard[rowCoordinate][columnCoordinate] = 0; 
+            showTable();
+            return true;
+        }
+    }
+    return false;
+}
+
+function checkIfWinner()
+{
+    var count = 1;
+    for (var i = 0; i < rows; i++){
+        for (var j = 0; j < rows; j++){
+            if (arrayForBoard[i][j] != count)
+            {
+                if( !(count === rows * columns && arrayForBoard[i][j] === 0))
+                {
+                    return false;
+                }
+            }
+            count++;
+        }
+    }
+
+    return true;
+}
+
+function incrementMoves()
+{
+    moves++;
+    if (textMoves){
+        textMoves.innerHTML = moves;
+    }
+}
 
 window.addEventListener( "load", start, false ); // This event listener makes the function start() execute when the window opens. 
