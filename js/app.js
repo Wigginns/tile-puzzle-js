@@ -25,6 +25,8 @@ function startNewGame()
     var count = 0;
     moves = 0;
 
+    console.log("game start");
+
     rows = document.getElementById("rows").value;
     columns = document.getElementById("columns").value;
 
@@ -42,7 +44,12 @@ function startNewGame()
     for (var i = 0; i < arrayToFillFrom.length; i++){
         arrayToFillFrom[i] = i;
     }
+
+    console.log(arrayToFillFrom);
     arrayToFillFrom.sort(function(a, b){return 0.5 - Math.random()});
+    console.log(arrayToFillFrom);
+
+    ensureSolvability(arrayToFillFrom);
 
     //pop randomized values from 1 to boardsize-1 into game board array
     for (var i = 0; i < rows; i++)
@@ -164,5 +171,60 @@ function incrementMoves()
         textMoves.innerHTML = moves;
     }
 }
+
+ /*****************************************
+  * 
+  * Formula for determining solvability:
+  * http://www.cs.bham.ac.uk/~mdr/teaching/modules04/java2/TilesSolvability.html
+  * First calculate the number of inversions, when a tile a comes before tile b and is larger, this is an inversion
+  * Based on whether the grid is even or odd, the number of inversions and the location of the blank we can use a formula to show solvability
+  * a. If the grid width is odd, then the number of inversions in a solvable situation is even.
+  * b. If the grid width is even, and the blank is on an even row counting from the bottom (second-last, fourth-last etc), then the number of inversions in a solvable situation is odd.
+  * c. If the grid width is even, and the blank is on an odd row counting from the bottom (last, third-last, fifth-last etc) then the number of inversions in a solvable situation is even.
+  * ( (grid width odd) && (#inversions even) )  ||  ( (grid width even) && ((blank on odd row from bottom) == (#inversions even)) )
+  * 
+ ******************************************/
+function ensureSolvability(arrayToFillFrom)
+{
+    var inversions = 0;
+    var blank;
+    var solvable = false;
+
+    console.log(arrayToFillFrom.length);
+
+    for(var i = 0; i < arrayToFillFrom.length; i++)
+    {
+        console.log("array[" + i +"] == " + arrayToFillFrom[i]);
+        if(arrayToFillFrom[i] == 0)
+        {
+            blank = i;
+            console.log("blank at " + i);
+        }
+        // else
+        // {
+        //     for(var j = i+1; i < arrayToFillFrom.length; j++)
+        //     {
+        //         if (arrayToFillFrom[i] > arrayToFillFrom[j]) { inversions++; }
+        //         console.log("current inversions" + inversions);
+        //     }
+        // }
+    }
+
+    if(     (!isEven(columns) && (inversions % 2 == 0))
+        ||  ((isEven(columns)) && (isEven(findRow(blank))) && !(isEven(inversions))) 
+        ||  ((isEven(columns)) && (!isEven(findRow(blank))) && (isEven(inversions))) )
+    {
+        solvable = true;
+    }
+
+    console.log({inversions, blank, solvable});
+}
+
+function findRow(index){
+   return Math.floor(index/columns);
+}
+
+function isEven(num) { return (num % 2) == 0; }
+
 
 window.addEventListener( "load", start, false ); // This event listener makes the function start() execute when the window opens. 
