@@ -51,7 +51,7 @@ function startNewGame()
 
     if (!EASY) arrayToFillFrom.sort(function(a, b){return 0.5 - Math.random()});
     
-    while(!solvable(arrayToFillFrom))
+    while(!isSolvable(arrayToFillFrom))
     {
         arraycount++;
         if (textArraycount){
@@ -107,10 +107,10 @@ function showTable()
 
 function moveTile( tableRow, tableColumn, id)
 {
-    if (checkIfMoveable(tableRow, tableColumn, "up") ||
-        checkIfMoveable(tableRow, tableColumn, "down") ||
-        checkIfMoveable(tableRow, tableColumn, "left") ||
-        checkIfMoveable(tableRow, tableColumn, "right") )
+    if (attemptMove(tableRow, tableColumn, "up") ||
+        attemptMove(tableRow, tableColumn, "down") ||
+        attemptMove(tableRow, tableColumn, "left") ||
+        attemptMove(tableRow, tableColumn, "right") )
     {
      incrementMoves();
     }
@@ -133,7 +133,7 @@ function moveTile( tableRow, tableColumn, id)
     }
 }
 
-function checkIfMoveable(rowCoordinate, columnCoordinate, direction)
+function attemptMove(rowCoordinate, columnCoordinate, direction)
 {
     rowOffset = 0;
     columnOffset = 0;
@@ -209,7 +209,7 @@ function incrementMoves()
   * ( (grid width odd) && (#inversions even) )  ||  ( (grid width even) && ((blank on odd row from bottom) == (#inversions even)) )
   * 
  ******************************************/
-function solvable(arrayToFillFrom)
+function isSolvable(arrayToFillFrom)
 {
     var inversions = 0;
     var blank;
