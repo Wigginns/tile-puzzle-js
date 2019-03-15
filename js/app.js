@@ -116,11 +116,9 @@ function moveTile( tableRow, tableColumn, id)
     }
     else
     {
-        id.classList.toggle('tile');
         id.classList.toggle('tileInvalid');
         
         setTimeout(function(){
-            id.classList.toggle('tile');
             id.classList.toggle('tileInvalid');
         }, 500);
 
