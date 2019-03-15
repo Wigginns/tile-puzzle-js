@@ -87,18 +87,18 @@ function showTable()
     //Loop through in reverse so that the table generated matches the intuitive array indices
     for (var i = rows-1; i >= 0; i--)
     {
-        outputString += "<tr>"; //Start row
+        outputString += "<div class=\"row\">"; //Start row
         for (var j = columns - 1; j >= 0; j--){
             //set "0" tile to blank
             if(arrayForBoard[i][j] == 0){
-                outputString += "<td class=\"blank\"> </td>";
+                outputString += "<div class=\"tile blank\"> </div>";
             }
             else
             {
-                outputString += "<td class=\"tile\" onClick=\"moveTile(" + i + ", " + j + ", this" + ")\">" + arrayForBoard[i][j] + "</td>";
+                outputString += "<div class=\"tile\" onClick=\"moveTile(" + i + ", " + j + ", this" + ")\">" + "<div class \"inner\">" + arrayForBoard[i][j] + "</div>" + "</div>";
             }
         }
-        outputString += "</tr>"; //End Row
+        outputString += "</div>"; //End Row
     }
 
     gametable.innerHTML = outputString;
